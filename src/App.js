@@ -1,10 +1,10 @@
 import "./App.css";
-import ClinicalTrails from "./components/ClinicalTrails";
+import SearchForm from "./components/SearchForm";
 
 function App() {
   return (
-    <div className="App">
-      <ClinicalTrails></ClinicalTrails>
+    <div>
+      <SearchForm></SearchForm>
     </div>
   );
 }
