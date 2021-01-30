@@ -56,49 +56,43 @@ const ResultForm = ({ data }) => {
   return (
     <>
       <Grid container justify="center">
-        {data
-          .filter(
-            (x) =>
-              x.Study.ProtocolSection.StatusModule.OverallStatus ===
-              "Recruiting"
-          )
-          .map((x) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={x.Rank}>
-              <Card className={classes.card}>
-                <CardHeader
-                  title={
-                    <Typography
-                      className={classes.title}
-                      color="textSecondary"
-                      gutterBottom
-                    >
-                      {x.Study.ProtocolSection.IdentificationModule.BriefTitle}
-                    </Typography>
-                  }
-                  action={
-                    <IconButton aria-label="settings">
-                      <MoreVertIcon />
-                    </IconButton>
-                  }
-                ></CardHeader>
-                <CardContent>
-                  <Typography>
-                    {x.Study.ProtocolSection.IdentificationModule.OfficialTitle}
+        {data.map((x) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={x.Rank}>
+            <Card className={classes.card}>
+              <CardHeader
+                title={
+                  <Typography
+                    className={classes.title}
+                    color="textSecondary"
+                    gutterBottom
+                  >
+                    {x.Study.ProtocolSection.IdentificationModule.BriefTitle}
                   </Typography>
-                  <Box m={2}>
-                    <Chip
-                      label={x.Study.ProtocolSection.DesignModule.StudyType}
-                      color="primary"
-                    />
-                    <Chip
-                      label={x.Study.ProtocolSection.StatusModule.OverallStatus}
-                      color="secondary"
-                    />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                }
+                action={
+                  <IconButton aria-label="settings">
+                    <MoreVertIcon />
+                  </IconButton>
+                }
+              ></CardHeader>
+              <CardContent>
+                <Typography>
+                  {x.Study.ProtocolSection.IdentificationModule.OfficialTitle}
+                </Typography>
+                <Box m={2}>
+                  <Chip
+                    label={x.Study.ProtocolSection.DesignModule.StudyType}
+                    color="primary"
+                  />
+                  <Chip
+                    label={x.Study.ProtocolSection.StatusModule.OverallStatus}
+                    color="secondary"
+                  />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
     </>
   );

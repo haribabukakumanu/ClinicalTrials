@@ -1,55 +1,72 @@
 import { TextField, Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useState } from "react";
-import axios from "axios";
 import ResultForm from "./ResultForm";
+import { fetchData } from "../api";
+import Header from "./Header";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
   },
 }));
 
 const SearchForm = () => {
   const classes = useStyles();
 
-  const [disease, setDisease] = useState("");
+  const [searchValues, setSearchValues] = useState({
+    disease: "ALS",
+    country: "United States",
+    records: 10,
+  });
+
   const [data, setData] = useState([]);
 
-  const handleSubmit = (disease) => {
-    const url = `https://ClinicalTrials.gov/api/query/full_studies?fmt=json&expr=${disease}&min_rnk=1&max_rnk=100`;
-    axios
-      .get(url)
-      .then((response) => {
-        setData(response.data.FullStudiesResponse.FullStudies);
-        //console.log(response.data.FullStudiesResponse.FullStudies);
-      })
-      .catch(() =>
-        console.log("Can’t access " + url + " response. Blocked by browser?")
-      );
+  const handleSubmit = async (disease, country, maxRecords) => {
+    const apiData = await fetchData(disease, country, maxRecords);
+
+    const {
+      NStudiesFound,
+      NStudiesReturned,
+      FullStudies,
+    } = apiData.FullStudiesResponse;
+
+    setData(FullStudies);
   };
 
   const handleChange = (e) => {
-    setDisease(e.target.value);
+    setSearchValues({ ...searchValues, [e.target.name]: e.target.value });
     setData([]);
   };
 
   const handleReset = () => {
-    setDisease("");
     setData([]);
   };
 
   return (
     <>
+      <Header></Header>
       <form autoComplete="off">
         <Box textAlign="center" m={2}>
           <TextField
             id="ConditionOrDisease"
             label="Condition or Disease"
-            value={disease}
+            value={searchValues.disease}
+            name="disease"
+            onChange={handleChange}
+          />
+          <TextField
+            id="country"
+            label="Country"
+            value={searchValues.country}
+            name="country"
+            onChange={handleChange}
+          />
+          <TextField
+            id="NoOfTrails"
+            label="No Of Trails"
+            value={searchValues.records}
+            name="records"
             onChange={handleChange}
           />
           <Button
@@ -57,7 +74,13 @@ const SearchForm = () => {
             variant="contained"
             color="primary"
             size="small"
-            onClick={() => handleSubmit(disease)}
+            onClick={() =>
+              handleSubmit(
+                searchValues.disease,
+                searchValues.country,
+                searchValues.records
+              )
+            }
           >
             Search
           </Button>
