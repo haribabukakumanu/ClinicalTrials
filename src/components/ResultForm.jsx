@@ -57,7 +57,7 @@ const ResultForm = ({ data }) => {
     <>
       <Grid container justify="center">
         {data.map((x) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={x.Rank}>
+          <Grid item xs={12} sm={6} key={x.Rank}>
             <Card className={classes.card}>
               <CardHeader
                 title={

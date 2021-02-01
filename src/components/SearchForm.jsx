@@ -1,14 +1,32 @@
-import { TextField, Button, Grid, Card, CardContent } from "@material-ui/core";
+import {
+  TextField,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  NativeSelect,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ResultForm from "./ResultForm";
-import { fetchData } from "../api";
+import { fetchData, fetchCountries } from "../api";
 import Header from "./Header";
 import NoData from "./NoData";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 200,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -22,6 +40,7 @@ const SearchForm = () => {
   });
 
   const [data, setData] = useState([]);
+  const [countries, setCountries] = useState([]);
 
   const handleSubmit = async (disease, country, maxRecords) => {
     const apiData = await fetchData(disease, country, maxRecords);
@@ -34,6 +53,14 @@ const SearchForm = () => {
 
     setData(FullStudies);
   };
+
+  useEffect(() => {
+    const fetchAPI = async () => {
+      setCountries(await fetchCountries());
+    };
+
+    fetchAPI();
+  }, []);
 
   const handleChange = (e) => {
     setSearchValues({ ...searchValues, [e.target.name]: e.target.value });
@@ -52,27 +79,49 @@ const SearchForm = () => {
           <Card>
             <CardContent style={{ display: "flex", justifyContent: "center" }}>
               <form autoComplete="off">
-                <TextField
-                  id="ConditionOrDisease"
-                  label="Condition or Disease"
-                  value={searchValues.disease}
-                  name="disease"
-                  onChange={handleChange}
-                />
-                <TextField
-                  id="country"
-                  label="Country"
-                  value={searchValues.country}
-                  name="country"
-                  onChange={handleChange}
-                />
-                <TextField
-                  id="NoOfTrails"
-                  label="No Of Trails"
-                  value={searchValues.records}
-                  name="records"
-                  onChange={handleChange}
-                />
+                <FormControl className={classes.formControl}>
+                  <TextField
+                    id="ConditionOrDisease"
+                    label="Condition or Disease"
+                    value={searchValues.disease}
+                    name="disease"
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="country-label">Country</InputLabel>
+                  <Select
+                    labelId="country-label"
+                    id="country"
+                    value={searchValues.country}
+                    name="country"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="United States">United States</MenuItem>
+                    {countries.map((country, i) => (
+                      <MenuItem key={i} value={country}>
+                        {country}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="trails-label">Number Of Trails</InputLabel>
+                  <Select
+                    labelId="trails-label"
+                    id="records"
+                    value={searchValues.records}
+                    name="records"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="10">10</MenuItem>
+                    <MenuItem value="25">25</MenuItem>
+                    <MenuItem value="50">50</MenuItem>
+                    <MenuItem value="75">75</MenuItem>
+                    <MenuItem value="100">100</MenuItem>
+                  </Select>
+                </FormControl>
+
                 <Button
                   className={classes.margin}
                   variant="contained"
