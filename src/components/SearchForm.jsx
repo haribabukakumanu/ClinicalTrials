@@ -4,16 +4,17 @@ import {
   Grid,
   Card,
   CardContent,
-  NativeSelect,
   FormControl,
   Select,
   MenuItem,
   InputLabel,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useCallback, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAllCountries, fetchCountries } from "../redux/countries";
 import ResultForm from "./ResultForm";
-import { fetchData, fetchCountries } from "../api";
+import { fetchData } from "../api";
 import Header from "./Header";
 import NoData from "./NoData";
 
@@ -33,6 +34,8 @@ const useStyles = makeStyles((theme) => ({
 const SearchForm = () => {
   const classes = useStyles();
 
+  const countries = useSelector(selectAllCountries);
+
   const [searchValues, setSearchValues] = useState({
     disease: "ALS",
     country: "United States",
@@ -40,7 +43,6 @@ const SearchForm = () => {
   });
 
   const [data, setData] = useState([]);
-  const [countries, setCountries] = useState([]);
 
   const handleSubmit = async (disease, country, maxRecords) => {
     const apiData = await fetchData(disease, country, maxRecords);
@@ -54,13 +56,14 @@ const SearchForm = () => {
     setData(FullStudies);
   };
 
-  useEffect(() => {
-    const fetchAPI = async () => {
-      setCountries(await fetchCountries());
-    };
+  const dispatch = useDispatch();
+  const countriesCallback = useCallback(() => {
+    dispatch(fetchCountries());
+  }, [dispatch]);
 
-    fetchAPI();
-  }, []);
+  useEffect(() => {
+    countriesCallback();
+  }, [countriesCallback]);
 
   const handleChange = (e) => {
     setSearchValues({ ...searchValues, [e.target.name]: e.target.value });

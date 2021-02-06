@@ -1,8 +1,6 @@
 import axios from "axios";
 
 const countriesUrl = "https://covid19.mathdro.id/api";
-
-//const url = "https://covid19.mathdro.id/api";
 const url = `https://ClinicalTrials.gov/api/query/full_studies?fmt=json&min_rnk=1`;
 
 export const fetchData = async (disease, country, maxRecords) => {
